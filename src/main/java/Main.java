@@ -1,7 +1,7 @@
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -19,27 +19,31 @@ public class Main extends ListenerAdapter {
                 .addEventListeners(new Main())
                 .build();
         jda.awaitReady();
-        out.println("Bot is ready.");
-        jda.updateCommands().queue();
-        jda.addEventListener(new Main());
+//        jda.updateCommands().queue();
+//        jda.addEventListener(new Main());
 
         jda.upsertCommand("yuki", "Reply with Pong!").queue();
+        jda.upsertCommand("yuki-test", "yuki-test").queue();
     }
 
     @Override
     public void onSlashCommand(SlashCommandEvent event) {
         out.println("onSlashCommand hit.");
-        out.println(event.getName());
+        out.println(String.format("event name: %s", event.getName()));
+        if (event.getUser().isBot()){
+            return;
+        }
 
         if (event.getName().equalsIgnoreCase("yuki")) {
             event.reply("Pong!").setEphemeral(false).queue();
-        } else {
-            event.reply("Invalid command.").setEphemeral(false).queue();
+        } else if (event.getName().equalsIgnoreCase("yuki-test")) {
+            event.reply("yuki-test").queue();
         }
     }
+
     @Override
     public void onReady(ReadyEvent event){
-        out.println("Bot is final ready.");
+        out.println("Bot is ready.");
 
     }
 }
